@@ -1,0 +1,62 @@
+Cmd's
+
+Make sure VS C Complier is started: The vcvarsall.bat is located at C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvarsall.bat x64
+Complier is started because in the \Homemade Hero\misc folder, there is a shell.bat file that has the line 
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x64
+
+So navigate to "C:\Users\User\Desktop\Homemade Hero\misc>"
+type: shell to start the complier
+
+To Build:
+navigate to project root dir where build.bat and type build. Will create a build folder and build to exe
+
+
+
+
+https://learn.microsoft.com/en-us/cpp/build/reference/c-cpp-building-reference?view=msvc-170
+https://learn.microsoft.com/en-us/cpp/build/reference/compiling-a-c-cpp-program?view=msvc-170
+https://learn.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170
+Complier Switches
+
+-DHANDMADE_INTERNAL=1 says use the C Preprocessor and make internal build
+-DHANDMADE_SLOW=1 says use the C Preprocessor and make un-optimized build (build is slower, so named slow)
+-Wall Verbose warnings when compiled
+-W3 or W4 warning level, not so versbose
+-WX the compiler will give warnings but also treat them as errors...fix to compile
+-Wd + the warning number shuts off that warning EG: -wd4201
+
+-Zi produces debug information (the .pdb files) maps source code to execuable code so it can be debugged
+-Z7 older method to produce debug info and works better in different build env and multi-proceesor machines
+
+-Oi use comipler intrinsics, if the comipler knows how to do something at complie time (sinf()), then do it and don't use library code. If the cpu has a built in function, use it.
+
+for C++, -GR- turns off runtime type information. Casey don't use much C++, I should probably use it...
+
+-EHa turns on exception handling and makes it so execeptions bubble all the way up from a throw statment - no matter how deep the throw is. But execetion handling generate more stuff on stack that may not always be needed.
+
+-nologo turns off the logo when compiler prints out build messages
+
+In startCompiler.bat
+	call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x64
+means complie to 64bit. use x86 to complie in 32bit (watch for casting and truncating memory size) 
+
+
+/link -subsystem:windows,5.1 will allow passing Linker options. Casey says this is required for Windows XP to read the executable. Windows XP is nolonger even supported at this point so I am not sure on this....
+
+If a dll can't be loaded when running the executable in the wild, on some other machine, try this.
+Sometimes a build won't include a C runtime library and the compiler/execuable assumes the library will be handed to the execuable at runtime from the Windows OS version installed. It might be that the OS just donen't have the library or the correct version in dll form. A program called Depends.exe will show the libs and dlls that a program relies on.
+
+vc var redistibutable is often a required dll that dosen't get included
+-MD says use the dll, -MT says use the static library, actually pack it into exe and not look for it on OS that it's running on. If -MTd, use the debug library
+
+-Gm- build completely everytime, do use old build files with new....
+
+-Fm tells the link where to stick a map file. -Fmwin32_handmade.map It maps all functions that were included in the executable and where they are inserted in the exe. How the C runtime includes C programming language dll and libs. /link -opt:ref will only put in whats important
+
+
+-Od disables all compiler optimizations, leave code as I wrote it.
+
+
+
+BELOW is a marco defining a function. THe extern 'C" means follow the old C convention and don't mangle (alis) the name at complie time
+extern "C" GAME_GET_UPDATE_RENDERER(GameGetUpdateRenderer)
